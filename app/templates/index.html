@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mapa de Google</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="main-container">
+        <div class="buttons-panel">
+            <a href="{{ url_for('agregar_contenedor') }}" class="action-button add-button">Agregar Contenedor</a>
+            <a href="{{ url_for('eliminar_contenedor') }}" class="action-button add-button">Eliminar Contenedor</a>
+            <a href="{{ url_for('editar_contenedor') }}" class="action-button add-button">editar Contenedor</a>
+        </div>
+
+        <div class="map-box-container">
+            <h1 class="map-title">Mapa de la Ciudad de Chilecito</h1>
+            <div id="map"></div>
+        </div>
+    </div>
+
+    <script>
+        const datosContenedores = JSON.parse('{{ contenedores | tojson | safe }}');
+    </script>
+    <script src="{{ url_for('static', filename='JS/script.js') }}"></script>
+
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD42PTKxmjYoXylhpUf2rzpMkMEfnAogI0&callback=iniciarMap"></script>
+</body>
+</html>
