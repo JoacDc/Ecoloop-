@@ -1,6 +1,6 @@
 # ECOLOOP ♻️
 
-¡Bienvenido a Ecoloop! Un proyecto dedicado a facilitar la participación ciudadana en el reciclaje, proporcionando herramientas y recursos para tomar decisiones informadas y sostenibles.
+Ecoloop es Un proyecto dedicado a facilitar la participación ciudadana en el reciclaje, proporcionando herramientas y recursos para tomar decisiones informadas y sostenibles.
 
 ---
 
