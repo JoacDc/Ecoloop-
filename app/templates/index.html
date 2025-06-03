@@ -8,8 +8,14 @@
     <div class="main-container">
         <div class="buttons-panel">
             <a href="{{ url_for('agregar_contenedor') }}" class="action-button add-button">Agregar Contenedor</a>
-            <a href="{{ url_for('eliminar_contenedor') }}" class="action-button add-button">Eliminar Contenedor</a>
-            <a href="{{ url_for('editar_contenedor') }}" class="action-button add-button">editar Contenedor</a>
+            <a href="{{ url_for('eliminar_contenedor') }}" class="action-button delete-button">Eliminar Contenedor</a>
+            <a href="{{ url_for('editar_contenedor') }}" class="action-button edit-button">Editar Contenedor</a>
+
+            <div class="containers-list-panel">
+                <h2>Contenedores en el Mapa</h2>
+                <div id="container-cards-container">
+                    </div>
+            </div>
         </div>
 
         <div class="map-box-container">

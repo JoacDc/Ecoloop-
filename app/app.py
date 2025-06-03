@@ -94,7 +94,6 @@ def editar_contenedor():
 
 @app.route("/")
 def mapa():
-
     contenedores = list(db.contenedores.find())
     for c in contenedores:
         c["_id"] = str(c["_id"])

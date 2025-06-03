@@ -3,45 +3,71 @@ let ultimaUbicacion = null;
 let mapaGoogle; // Declaramos una variable global para el objeto mapa
 let infoWindowContenedores;
 
-
 function iniciarMap() {
     const coord = { lat: -29.16434370771048, lng: -67.49589881729844 };
-    mapaGoogle = new google.maps.Map(document.getElementById('map'), { // Asignamos el mapa a la variable global
+    mapaGoogle = new google.maps.Map(document.getElementById('map'), {
         zoom: 13,
         center: coord,
         mapTypeId: 'hybrid',
-        styles: getEstilosConZoom(13)
+        styles: getEstilosConZoom(13) // Asegúrate de tener esta función definida en algún lugar
     });
 
-    //crear los marcadores
-    // Inicializamos la InfoWindow para los marcadores de contenedores
-    infoWindowContenedores = new google.maps.InfoWindow();
+    infoWindowContenedores = new google.maps.InfoWindow();    
 
-                // Crear los marcadores existentes de los contenedores
+    // Contenedor donde se insertarán las tarjetas++
+    const containerCardsContainer = document.getElementById('container-cards-container');
+
+    // Almacenar los marcadores para poder acceder a ellos desde las tarjetas
+    const markers = [];
+
+    // Crear los marcadores existentes de los contenedores y sus tarjetas
     datosContenedores.forEach(contenedor => {
-        const latLng = new google.maps.LatLng(contenedor.lat, contenedor.long);
+        const latLng = new google.maps.LatLng(contenedor.lat, contenedor.long); // Usar latitud y longitud
         const marker = new google.maps.Marker({
         position: latLng,
         map: mapaGoogle,
         title: contenedor.nombre
     });
 
-                // Contenido de la InfoWindow para cada contenedor
-    const contentString = `
-        <div class="info-window-content">
-            <h3 class="font-bold text-lg mb-1">${contenedor.nombre}</h3>
+        markers.push(marker); // Guardar el marcador
+
+        // Contenido de la InfoWindow para cada contenedor
+        const contentString = `
+            <div class="info-window-content">
+                <h3 class="font-bold text-lg mb-1">${contenedor.nombre}</h3>
+                <p><strong>Color:</strong> ${contenedor.color}</p>
+                <p><strong>Tamaño:</strong> ${contenedor.tamanio} m³</p>
+                <p><strong>Tipo de Residuo:</strong> ${contenedor.tipoResiduo}</p>
+            </div>
+        `;
+
+        // Añadir un listener para abrir la InfoWindow al hacer clic en el marcador
+        marker.addListener('click', () => {
+            infoWindowContenedores.setContent(contentString);
+            infoWindowContenedores.open(mapaGoogle, marker);
+        });
+
+        // Crear la tarjeta para el contenedor
+        const card = document.createElement('div');
+        card.className = 'container-card';
+        card.innerHTML = `
+            <h3>${contenedor.nombre}</h3>
             <p><strong>Color:</strong> ${contenedor.color}</p>
             <p><strong>Tamaño:</strong> ${contenedor.tamanio} m³</p>
             <p><strong>Tipo de Residuo:</strong> ${contenedor.tipoResiduo}</p>
-            <p><strong>Lat:</strong> ${contenedor.latitud}, <strong>Lng:</strong> ${contenedor.longitud}</p>
-        </div>
-    `;
+        `;
 
-                // Añadir un listener para abrir la InfoWindow al hacer clic en el marcador
-    marker.addListener('click', () => {
-    infoWindowContenedores.setContent(contentString);
-    infoWindowContenedores.open(mapaGoogle, marker);
+        // Añadir un listener para que al hacer clic en la tarjeta:
+        // 1. Se centre el mapa en el contenedor
+        // 2. Se abra la InfoWindow del marcador correspondiente
+        card.addEventListener('click', () => {
+            mapaGoogle.setCenter(latLng);
+            mapaGoogle.setZoom(16); // Puedes ajustar el zoom al hacer clic en la tarjeta
+            infoWindowContenedores.setContent(contentString);
+            infoWindowContenedores.open(mapaGoogle, marker);
         });
+
+        containerCardsContainer.appendChild(card);
     });
 
 }
