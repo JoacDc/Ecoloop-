@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # ECOLOOP ♻️
 
 ¡Bienvenido a Ecoloop! Un proyecto dedicado a facilitar la participación ciudadana en el reciclaje, proporcionando herramientas y recursos para tomar decisiones informadas y sostenibles.
@@ -172,4 +171,3 @@ Sigue estos pasos para poner en marcha Ecoloop en tu sistema Windows:
     * `http://localhost:5000`
     * o
     * `http://127.0.0.1:5000`
->>>>>>> 9efcc08db1bb2afaa22a061659d638f8823123ca
