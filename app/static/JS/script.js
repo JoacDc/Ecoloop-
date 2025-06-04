@@ -12,12 +12,10 @@ function iniciarMap() {
         zoom: 13,
         center: coord,
         mapTypeId: 'hybrid',
-        styles: getEstilosConZoom(13) // Asegúrate de tener esta función definida en algún lugar
+        styles: getEstilosConZoom(13)
     });
 
     infoWindowContenedores = new google.maps.InfoWindow();    
-
-<<<<<<< HEAD
     const containerCardsContainer = document.getElementById('container-cards-container');
     const markers = [];
 
@@ -130,63 +128,58 @@ function mapaAgregarContenedor(){
             } else {
                 botonEnviar.disabled = true;
             }
-=======
-    // Contenedor donde se insertarán las tarjetas++
-    const containerCardsContainer = document.getElementById('container-cards-container');
+        });
+    });
 
-    // Almacenar los marcadores para poder acceder a ellos desde las tarjetas
+    // Contenedor donde se insertarán las tarjetas
+    const containerCardsContainer = document.getElementById('container-cards-container');
     const markers = [];
 
     // Crear los marcadores existentes de los contenedores y sus tarjetas
-    datosContenedores.forEach(contenedor => {
-        const latLng = new google.maps.LatLng(contenedor.lat, contenedor.long); // Usar latitud y longitud
-        const marker = new google.maps.Marker({
-        position: latLng,
-        map: mapaGoogle,
-        title: contenedor.nombre
-    });
+    if (typeof datosContenedores !== 'undefined' && datosContenedores.length > 0) {
+        datosContenedores.forEach(contenedor => {
+            const latLng = new google.maps.LatLng(contenedor.ubicacion.lat, contenedor.ubicacion.lng);
+            const marker = new google.maps.Marker({
+                position: latLng,
+                map: mapaGoogle,
+                title: contenedor.nombre
+            });
 
-        markers.push(marker); // Guardar el marcador
+            markers.push(marker);
 
-        // Contenido de la InfoWindow para cada contenedor
-        const contentString = `
-            <div class="info-window-content">
-                <h3 class="font-bold text-lg mb-1">${contenedor.nombre}</h3>
+            const contentString = `
+                <div class="info-window-content">
+                    <h3 class="font-bold text-lg mb-1">${contenedor.nombre}</h3>
+                    <p><strong>Color:</strong> ${contenedor.color}</p>
+                    <p><strong>Tamaño:</strong> ${contenedor.tamanio} m³</p>
+                    <p><strong>Tipo de Residuo:</strong> ${contenedor.tipoResiduo}</p>
+                </div>
+            `;
+
+            marker.addListener('click', () => {
+                infoWindowContenedores.setContent(contentString);
+                infoWindowContenedores.open(mapaGoogle, marker);
+            });
+
+            const card = document.createElement('div');
+            card.className = 'container-card';
+            card.innerHTML = `
+                <h3>${contenedor.nombre}</h3>
                 <p><strong>Color:</strong> ${contenedor.color}</p>
                 <p><strong>Tamaño:</strong> ${contenedor.tamanio} m³</p>
                 <p><strong>Tipo de Residuo:</strong> ${contenedor.tipoResiduo}</p>
-            </div>
-        `;
+            `;
 
-        // Añadir un listener para abrir la InfoWindow al hacer clic en el marcador
-        marker.addListener('click', () => {
-            infoWindowContenedores.setContent(contentString);
-            infoWindowContenedores.open(mapaGoogle, marker);
+            card.addEventListener('click', () => {
+                mapaGoogle.setCenter(latLng);
+                mapaGoogle.setZoom(16);
+                infoWindowContenedores.setContent(contentString);
+                infoWindowContenedores.open(mapaGoogle, marker);
+            });
+
+            containerCardsContainer.appendChild(card);
         });
-
-        // Crear la tarjeta para el contenedor
-        const card = document.createElement('div');
-        card.className = 'container-card';
-        card.innerHTML = `
-            <h3>${contenedor.nombre}</h3>
-            <p><strong>Color:</strong> ${contenedor.color}</p>
-            <p><strong>Tamaño:</strong> ${contenedor.tamanio} m³</p>
-            <p><strong>Tipo de Residuo:</strong> ${contenedor.tipoResiduo}</p>
-        `;
-
-        // Añadir un listener para que al hacer clic en la tarjeta:
-        // 1. Se centre el mapa en el contenedor
-        // 2. Se abra la InfoWindow del marcador correspondiente
-        card.addEventListener('click', () => {
-            mapaGoogle.setCenter(latLng);
-            mapaGoogle.setZoom(16); // Puedes ajustar el zoom al hacer clic en la tarjeta
-            infoWindowContenedores.setContent(contentString);
-            infoWindowContenedores.open(mapaGoogle, marker);
->>>>>>> 9efcc08db1bb2afaa22a061659d638f8823123ca
-        });
-
-        containerCardsContainer.appendChild(card);
-    });
+    }
 
     // Configurar el botón de enviar
     botonEnviar.addEventListener('click', function(e) {
@@ -391,6 +384,7 @@ async function enviarDatosEditar() {
         botonEnviar.disabled = false;
     }
 }
+
 //============================================================================
 //============================================================================
 async function cargarContenedores(mode = 'normal') {
@@ -692,11 +686,9 @@ function getEstilosConZoom(zoom) {
         }
     ];
 }
-<<<<<<< HEAD
 
 // Manejar el evento de retroceso/avance del navegador
 window.addEventListener('popstate', function(event) {
     window.location.reload();
 });
-=======
->>>>>>> 9efcc08db1bb2afaa22a061659d638f8823123ca
+
