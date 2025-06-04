@@ -1,0 +1,110 @@
+/* Estilos para el layout de dos columnas */
+body {
+    display: flex; /* Usa flexbox para el diseño */
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f4f4;
+    gap: 20px; /* Espacio entre las columnas */
+    flex-wrap: wrap; /* Permite que las columnas se envuelvan en pantallas pequeñas */
+}
+.container-list {
+    flex: 1; /* La lista de contenedores ocupa 1 parte del espacio */
+    min-width: 280px; /* Ancho mínimo para la lista */
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    overflow-y: auto; /* Permite desplazamiento si hay muchos contenedores */
+    max-height: calc(100vh - 40px); /* Ajusta la altura para que quepa en la ventana */
+}
+.form-container {
+    flex: 2; /* El formulario ocupa 2 partes del espacio */
+    min-width: 320px; /* Ancho mínimo para el formulario */
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Estilos para las tarjetas de contenedores */
+.container-card {
+    background-color: #f8f8f8;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+.container-card:hover {
+    background-color: #f0f0f0;
+    border-color: #c0c0c0;
+    transform: translateY(-2px);
+}
+.container-card.selected {
+    border: 2px solid #007bff; /* Borde azul para el seleccionado */
+    background-color: #e6f2ff; /* Fondo más claro para el seleccionado */
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+}
+.container-card h4 {
+    margin-top: 0;
+    margin-bottom: 5px;
+    color: #333;
+    font-size: 1.1em;
+}
+.container-card p {
+    margin: 0;
+    font-size: 0.85em;
+    color: #666;
+}
+
+/* Estilos existentes del formulario (ajustados para consistencia) */
+.form-group {
+    margin-bottom: 15px;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #444;
+}
+.form-group input[type="text"],
+.form-group input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 1em;
+}
+#map {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+#coordenadas, #direccion {
+    text-align: center;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #555;
+}
+#enviarTodo {
+    width: 100%;
+    padding: 12px 15px;
+    background-color: #28a745; /* Un verde para "Guardar Cambios" */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: background-color 0.3s ease;
+}
+#enviarTodo:hover:not(:disabled) {
+    background-color: #218838;
+}
+#enviarTodo:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}

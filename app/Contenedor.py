@@ -1,13 +1,14 @@
+# Contenedor.py
+
 class Contenedor:
-    # Constructor corregido: acepta todos los argumentos
-    
-    def __init__(self, id, nombre, lat, long, color, tamaño, tipoResiduo, cantidadMax, cantidadMin):
+    # Constructor corregido: acepta todos los argumentos con 'tamanio'
+    def __init__(self, id, nombre, lat, long, color, tamanio, tipoResiduo, cantidadMax, cantidadMin):
         self.id = id
         self.nombre = nombre
         self.lat = lat
         self.long = long
         self.color = color
-        self.tamaño = tamaño
+        self.tamanio = tamanio  # ¡CORRECCIÓN AQUÍ! Cambiado de 'tamaño' a 'tamanio'
         self.tipoResiduo = tipoResiduo
         self.cantidadMax = cantidadMax
         self.cantidadMin = cantidadMin
@@ -19,7 +20,7 @@ class Contenedor:
             "lat": self.lat,
             "long": self.long,
             "color": self.color,
-            "tamaño": self.tamaño,
+            "tamanio": self.tamanio,  # ¡CORRECCIÓN AQUÍ! Cambiado de 'tamaño' a 'tamanio'
             "tipoResiduo": self.tipoResiduo,
             "cantidadMax": self.cantidadMax,
             "cantidadMin": self.cantidadMin
@@ -27,8 +28,8 @@ class Contenedor:
 
     def __str__(self):
         return f"Contenedor({self.nombre}, {self.lat}, {self.long})"
+    
     # Getters y Setters
-
     @property
     def nombre(self):
         return self._nombre
@@ -62,12 +63,12 @@ class Contenedor:
         self._color = valor
 
     @property
-    def tamaño(self):
-        return self._tamaño
+    def tamanio(self):  # ¡CORRECCIÓN AQUÍ! Cambiado de 'tamaño' a 'tamanio'
+        return self._tamanio
 
-    @tamaño.setter
-    def tamaño(self, valor):
-        self._tamaño = valor
+    @tamanio.setter  # ¡CORRECCIÓN AQUÍ! Cambiado de 'tamaño' a 'tamanio'
+    def tamanio(self, valor):
+        self._tamanio = valor
 
     @property
     def tipoResiduo(self):
@@ -96,8 +97,8 @@ class Contenedor:
     def prueba(self):
         print("funciona")
 
-   
-    
-    def __str__(self):
-        return f"{self.nombre} - {self.tipoResiduo} ({self.color}), lat: {self.lat}, lon: {self.long}"
+    # Ya tienes un __str__ definido arriba, este es redundante.
+    # Si quieres usar este, elimina el anterior.
+    # def __str__(self):
+    #     return f"{self.nombre} - {self.tipoResiduo} ({self.color}), lat: {self.lat}, lon: {self.long}"
 

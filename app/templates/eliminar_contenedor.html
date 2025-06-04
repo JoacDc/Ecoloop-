@@ -1,14 +1,49 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Mapa de Google</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Eliminar Contenedor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Referencia a la hoja de estilos CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_eliminar_contenedor.css') }}">
+    <!-- Incluye Font Awesome para el icono de la papelera -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <div class="map-box-container">
-            <h1 class="map-title">eliminar_contenedor</h1>
+    <div class="main-container">
+        <div class="map-box-container">
+            <h1 class="map-title">Eliminar Contenedor</h1>
             <div id="map"></div>
+            <!-- Elementos para mostrar coordenadas y dirección -->
+            <div class="mt-4 text-center">
+                <p id="coordenadas" class="text-sm text-gray-400">Latitud: — | Longitud: —</p>
+                <p id="direccion" class="text-sm text-gray-400">📍 Dirección: —</p>
+            </div>
         </div>
+
+        <div class="container-list-section">
+            <h3>Selecciona un Contenedor para Eliminar</h3>
+            <div id="containerList">
+                <p id="loadingMessage">Cargando contenedores...</p>
+            </div>
+        </div>
+
+        <!-- Modal de confirmación (inicialmente oculto por CSS) -->
+        <div id="confirmationModal" class="custom-confirm">
+            <p id="confirmationMessage"></p>
+            <div class="flex justify-center mt-4">
+                <button class="button-confirm" onclick="confirmarEliminar()">Aceptar</button>
+                <button class="button-cancel" onclick="cancelarEliminar()">Cancelar</button>
+            </div>
+        </div>
+
+        <!-- Contenedor para alertas personalizadas (posición fija para notificaciones) -->
+        <div id="customAlertContainer" style="position: fixed; bottom: 20px; right: 20px; z-index: 1020;"></div>
     </div>
+
+    <!-- El script.js ya está en un archivo separado -->
+    <script src="{{ url_for('static', filename='JS/script.js') }}"></script>
+    <!-- La función mapaEliminarContenedor se llamará cuando la API de Google Maps se cargue -->
+    <!-- ¡IMPORTANTE!: Esta línea debe estar activa en tu entorno Flask para que el mapa funcione. -->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD42PTKxmjYoXylhpUf2rzpMkMEfnAogI0&callback=mapaEliminarContenedor"></script>
 </body>
 </html>
