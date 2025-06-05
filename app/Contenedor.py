@@ -97,8 +97,4 @@ class Contenedor:
     def prueba(self):
         print("funciona")
 
-    # Ya tienes un __str__ definido arriba, este es redundante.
-    # Si quieres usar este, elimina el anterior.
-    # def __str__(self):
-    #     return f"{self.nombre} - {self.tipoResiduo} ({self.color}), lat: {self.lat}, lon: {self.long}"
-
+    

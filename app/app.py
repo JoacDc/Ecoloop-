@@ -2,9 +2,9 @@ import logging
 
 from flask import Flask, render_template, request, jsonify
 import random as rd
-from Contenedor import Contenedor # Asegúrate de que tu clase Contenedor pueda manejar 'lat' y 'long' directamente
+from Contenedor import Contenedor 
 from connection import getConnection
-from bson.objectid import ObjectId, InvalidId # IMPORTANTE: Importar ObjectId E InvalidId
+from bson.objectid import ObjectId, InvalidId 
 
 
 log = logging.getLogger('werkzeug')
@@ -19,7 +19,7 @@ contenedores = []
 #=========================================================#
 
 #=========================================================#
-@app.route('/agregar_contenedor') # Le cambié el nombre para diferenciarlo
+@app.route('/agregar_contenedor') 
 def agregar_contenedor():
     return render_template('agregar_contenedor.html')
 
@@ -31,17 +31,14 @@ def crear_contenedor():
         data = request.get_json()
         print("🔍 Datos recibidos:", data)
         
-
-        # ¡CORRECCIÓN CLAVE AQUÍ!
-        # Accedemos a lat y lng desde el objeto 'ubicacion' anidado
         latitud = float(data['ubicacion']['lat'])
         longitud = float(data['ubicacion']['lng'])
 
         nuevo_contenedor = Contenedor(
             id=rd.randint(100, 100000),
             nombre=data['nombre'],
-            lat=latitud, # Usamos la latitud extraída del objeto 'ubicacion'
-            long=longitud, # Usamos la longitud extraída del objeto 'ubicacion'
+            lat=latitud, 
+            long=longitud, 
             color=data['color'],
             tamanio=float(data['tamanio']),
             tipoResiduo=data['tipoResiduo'],
@@ -54,12 +51,12 @@ def crear_contenedor():
         contenedor_dict = {
             "id": nuevo_contenedor.id,
             "nombre": nuevo_contenedor.nombre,
-            "ubicacion": { # Esta estructura ya era correcta para MongoDB
+            "ubicacion": { 
                 "lat": nuevo_contenedor.lat,
-                "lng": nuevo_contenedor.long # Usamos 'lng' para ser consistente con Google Maps
+                "lng": nuevo_contenedor.long 
             },
             "color": nuevo_contenedor.color,
-            "tamanio": nuevo_contenedor.tamanio, # ¡CORRECCIÓN! Cambiado de 'tamaño' a 'tamanio' para consistencia
+            "tamanio": nuevo_contenedor.tamanio, 
             "tipoResiduo": nuevo_contenedor.tipoResiduo,
             "cantidadMax": nuevo_contenedor.cantidadMax,
             "cantidadMin": nuevo_contenedor.cantidadMin
@@ -86,12 +83,12 @@ def crear_contenedor():
 
     return jsonify({
         "mensaje": f"Contenedor {nuevo_contenedor.id} creado con éxito",
-        "data": data # Puedes devolver 'data' para depuración, o un subconjunto relevante
+        "data": data 
     })
 
 #=========================================================#
 
-@app.route('/eliminar_contenedor') # Le cambié el nombre para diferenciarlo
+@app.route('/eliminar_contenedor') 
 def eliminar_contenedor():
     print("☑️ Panel de eliminar un contenedor")
     return render_template('eliminar_contenedor.html')
