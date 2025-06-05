@@ -714,4 +714,7 @@ function getEstilosConZoom(zoom) {
 // Manejar el evento de retroceso/avance del navegador
 window.addEventListener('popstate', function(event) {
     window.location.reload();
+
 });
+
+
