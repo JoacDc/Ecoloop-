@@ -1,7 +1,6 @@
 /* Importa una fuente moderna de Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Roboto:wght@400;700&display=swap');
 
-/* --- Estilos Globales y Tipografía --- */
 body {
     font-family: 'Inter', sans-serif; /* Fuente principal para el texto */
     line-height: 1.6;
@@ -23,7 +22,7 @@ h2, h3 {
     margin-bottom: 25px;
 }
 
-/* --- Contenedor Principal (.form-container) --- */
+
 .form-container {
     background-color: #ffffff;
     padding: 35px 40px;
@@ -65,7 +64,7 @@ h2, h3 {
     box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* Sombra suave al enfocar */
 }
 
-/* --- Mapa y Coordenadas --- */
+
 #map {
     height: 450px; /* Ligeramente más bajo, si lo prefieres */
     width: 100%; /* Ocupa todo el ancho del contenedor */
@@ -87,7 +86,7 @@ h2, h3 {
     font-weight: 500;
 }
 
-/* --- Botón de Enviar (button) --- */
+
 #enviarTodo {
     width: 100%;
     padding: 15px 20px;
@@ -115,12 +114,3 @@ h2, h3 {
     transform: none;
     opacity: 0.7; /* Ligeramente transparente */
 }
-
-/* --- Estilos de Tailwind CSS (presentes en tu HTML) --- */
-/* Es importante notar que las clases de Tailwind como 'mt-4', 'w-full',
-'bg-blue-500', 'hover:bg-blue-600', 'text-white', 'font-bold', 'py-2', 'px-4',
-'rounded-lg', 'transition', 'duration-150', 'ease-in-out', 'disabled:opacity-50'
-en tu botón `enviarTodo` están sobrescritas o complementadas por el CSS
-que te he proporcionado. Si quieres usar Tailwind de forma completa,
-tendrías que configurar Tailwind en tu proyecto y usar solo sus clases.
-Para este ejemplo, el CSS manual sobrescribirá las propiedades conflictivas.*/
