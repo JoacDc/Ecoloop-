@@ -5,6 +5,8 @@ let infoWindowContenedores;
 let contenedorAEliminarId = null;
 
 //============================================================================
+//FUNCION DE LA PANTALLA PRINCIPAL PARA EL INICIALIZACION DEL MAPA CON LA
+//DE LOS CONTENEDORES Y LOS MARCADADORES
 //============================================================================
 function iniciarMap() {
     const coord = { lat: -29.16434370771048, lng: -67.49589881729844 };
@@ -12,12 +14,10 @@ function iniciarMap() {
         zoom: 13,
         center: coord,
         mapTypeId: 'hybrid',
-        styles: getEstilosConZoom(13) // Asegúrate de tener esta función definida en algún lugar
+        styles: getEstilosConZoom(13)
     });
 
     infoWindowContenedores = new google.maps.InfoWindow();    
-
-<<<<<<< HEAD
     const containerCardsContainer = document.getElementById('container-cards-container');
     const markers = [];
 
@@ -70,6 +70,7 @@ function iniciarMap() {
 }
 
 //============================================================================
+//FUNCION QUE PERMIETE EL AGREGADO DE CONTENEDORES NUEVOS
 //============================================================================
 function mapaAgregarContenedor(){
     // Limpiar estado previo
@@ -109,7 +110,7 @@ function mapaAgregarContenedor(){
             obtenerDireccion(geocoder, event.latLng);
             ultimaUbicacion = event.latLng;
 
-            // Verificar si el navegador está bloqueando los logs
+            
             if (typeof console === "undefined" || typeof console.log === "undefined") {
                 alert("Click en coordenadas: " + event.latLng.lat() + ", " + event.latLng.lng());
             }
@@ -130,63 +131,58 @@ function mapaAgregarContenedor(){
             } else {
                 botonEnviar.disabled = true;
             }
-=======
-    // Contenedor donde se insertarán las tarjetas++
-    const containerCardsContainer = document.getElementById('container-cards-container');
+        });
+    });
 
-    // Almacenar los marcadores para poder acceder a ellos desde las tarjetas
+    // Contenedor donde se insertarán las tarjetas
+    const containerCardsContainer = document.getElementById('container-cards-container');
     const markers = [];
 
     // Crear los marcadores existentes de los contenedores y sus tarjetas
-    datosContenedores.forEach(contenedor => {
-        const latLng = new google.maps.LatLng(contenedor.lat, contenedor.long); // Usar latitud y longitud
-        const marker = new google.maps.Marker({
-        position: latLng,
-        map: mapaGoogle,
-        title: contenedor.nombre
-    });
+    if (typeof datosContenedores !== 'undefined' && datosContenedores.length > 0) {
+        datosContenedores.forEach(contenedor => {
+            const latLng = new google.maps.LatLng(contenedor.ubicacion.lat, contenedor.ubicacion.lng);
+            const marker = new google.maps.Marker({
+                position: latLng,
+                map: mapaGoogle,
+                title: contenedor.nombre
+            });
 
-        markers.push(marker); // Guardar el marcador
+            markers.push(marker);
 
-        // Contenido de la InfoWindow para cada contenedor
-        const contentString = `
-            <div class="info-window-content">
-                <h3 class="font-bold text-lg mb-1">${contenedor.nombre}</h3>
+            const contentString = `
+                <div class="info-window-content">
+                    <h3 class="font-bold text-lg mb-1">${contenedor.nombre}</h3>
+                    <p><strong>Color:</strong> ${contenedor.color}</p>
+                    <p><strong>Tamaño:</strong> ${contenedor.tamanio} m³</p>
+                    <p><strong>Tipo de Residuo:</strong> ${contenedor.tipoResiduo}</p>
+                </div>
+            `;
+
+            marker.addListener('click', () => {
+                infoWindowContenedores.setContent(contentString);
+                infoWindowContenedores.open(mapaGoogle, marker);
+            });
+
+            const card = document.createElement('div');
+            card.className = 'container-card';
+            card.innerHTML = `
+                <h3>${contenedor.nombre}</h3>
                 <p><strong>Color:</strong> ${contenedor.color}</p>
                 <p><strong>Tamaño:</strong> ${contenedor.tamanio} m³</p>
                 <p><strong>Tipo de Residuo:</strong> ${contenedor.tipoResiduo}</p>
-            </div>
-        `;
+            `;
 
-        // Añadir un listener para abrir la InfoWindow al hacer clic en el marcador
-        marker.addListener('click', () => {
-            infoWindowContenedores.setContent(contentString);
-            infoWindowContenedores.open(mapaGoogle, marker);
+            card.addEventListener('click', () => {
+                mapaGoogle.setCenter(latLng);
+                mapaGoogle.setZoom(16);
+                infoWindowContenedores.setContent(contentString);
+                infoWindowContenedores.open(mapaGoogle, marker);
+            });
+
+            containerCardsContainer.appendChild(card);
         });
-
-        // Crear la tarjeta para el contenedor
-        const card = document.createElement('div');
-        card.className = 'container-card';
-        card.innerHTML = `
-            <h3>${contenedor.nombre}</h3>
-            <p><strong>Color:</strong> ${contenedor.color}</p>
-            <p><strong>Tamaño:</strong> ${contenedor.tamanio} m³</p>
-            <p><strong>Tipo de Residuo:</strong> ${contenedor.tipoResiduo}</p>
-        `;
-
-        // Añadir un listener para que al hacer clic en la tarjeta:
-        // 1. Se centre el mapa en el contenedor
-        // 2. Se abra la InfoWindow del marcador correspondiente
-        card.addEventListener('click', () => {
-            mapaGoogle.setCenter(latLng);
-            mapaGoogle.setZoom(16); // Puedes ajustar el zoom al hacer clic en la tarjeta
-            infoWindowContenedores.setContent(contentString);
-            infoWindowContenedores.open(mapaGoogle, marker);
->>>>>>> 9efcc08db1bb2afaa22a061659d638f8823123ca
-        });
-
-        containerCardsContainer.appendChild(card);
-    });
+    }
 
     // Configurar el botón de enviar
     botonEnviar.addEventListener('click', function(e) {
@@ -202,6 +198,7 @@ function mapaAgregarContenedor(){
 }
 
 //============================================================================
+//FUNCION QUE PERMITE VALIDAD QUE NINGUNO DE LOS CAMPOS ESTE VACIO
 //============================================================================
 function validarFormulario() {
     return document.getElementById('nombre').value.trim() !== '' && 
@@ -211,6 +208,8 @@ function validarFormulario() {
 }
 
 //============================================================================
+// FUNCION QUE PERMITE ENVIAR LA INFORMACION DE CADA FORMULARIO A LA API FLASK
+//  PARA SU ALMACENAJE
 //============================================================================
 function enviarDatos() {
     const botonEnviar = document.getElementById("enviarTodo");
@@ -290,6 +289,7 @@ function enviarDatos() {
 }
 
 //============================================================================
+//FUNCION PARA EDITAR UN CONTENEDOR SELECCIONADO
 //============================================================================
 function mapaEditarContenedor(){
     const coord = { lat: -29.16434370771048, lng: -67.49589881729844 };
@@ -333,6 +333,8 @@ function mapaEditarContenedor(){
 }
 
 //============================================================================
+// FUNCION DE ENVIAR DATOS EDITADOS QUE ACOMPAÑA LA FUNCION DE EDITAR CONTE-
+// NEDOR (ES DISTINTA A LA DE AGREGAR, PORQUE UNA USA POST Y OTRA PUT)
 //============================================================================
 async function enviarDatosEditar() {
     const botonEnviar = document.getElementById("enviarTodo");
@@ -391,7 +393,10 @@ async function enviarDatosEditar() {
         botonEnviar.disabled = false;
     }
 }
+
 //============================================================================
+// FUNCION QUE PERMITE CARGAR LOS CONTENEDORES DENTRO DEL FRONT, TRAIDOS DESDE
+// FLASK
 //============================================================================
 async function cargarContenedores(mode = 'normal') {
     const containerListDiv = document.getElementById('containerList');
@@ -451,6 +456,9 @@ async function cargarContenedores(mode = 'normal') {
 }
 
 //============================================================================
+// PERMITE SELECCIONAR LOS CONTENEDORES EN CADA SECCION, COMO EN LA PANTALLA   
+// PRINCIPAL, EDITAR Y ELIMINAR (CADA CONTENEDOR APARECE COMO SI FUESE UNA CARD)
+// CON LA INFORMACION DE CADA UNO
 //============================================================================
 function seleccionarContenedor(contenedor, cardElement) {
     document.querySelectorAll('.container-card').forEach(card => {
@@ -475,6 +483,7 @@ function seleccionarContenedor(contenedor, cardElement) {
 }
 
 //============================================================================
+// HACE LO MISMO PERO PARA LA SECCION DE ELIMINAR UN CONTENEDOR
 //============================================================================
 function seleccionarContenedorParaEliminar(contenedor, cardElement) {
     document.querySelectorAll('.container-card').forEach(card => {
@@ -492,6 +501,7 @@ function seleccionarContenedorParaEliminar(contenedor, cardElement) {
 }
 
 //============================================================================
+//FUNCION QUE PERMITE ELIMINAR UN CONTENEDOR
 //============================================================================
 async function eliminarContenedor(id) {
     try {
@@ -517,6 +527,8 @@ async function eliminarContenedor(id) {
 }
 
 //============================================================================
+// FUNCION QUE INICIALIZAR EL MAPA Y LOS CONTENEDORES EN LA SECCION DE 
+// ELIMINAR UN CONTENEDOR   
 //============================================================================
 function mapaEliminarContenedor(){
     const coord = { lat: -29.16434370771048, lng: -67.49589881729844 };
@@ -543,6 +555,8 @@ function mapaEliminarContenedor(){
 }
 
 //============================================================================
+// FUNCIONAR QUE PERMITE MOSTRAR UN CARTEL PAR ACEPTAR LA ELIMINACION DE UN 
+// CONTENEDOR
 //============================================================================
 // Funciones para el modal de confirmación de eliminación
 function mostrarConfirmacionEliminar(id, nombre, event) {
@@ -606,6 +620,7 @@ function showCustomAlert(message, duration = 3000) {
 }
 
 //============================================================================
+// FUNCION QUE PERMITE COLOCAR UN UNICO MARCADO DENTRO DEL MAPA
 //============================================================================
 function colocarUnicoMarcador(location, map) {
     if (marcadorActual) {
@@ -620,6 +635,7 @@ function colocarUnicoMarcador(location, map) {
 }
 
 //============================================================================
+// FUNCION QUE PERMITE MOSTRAR LAS COORDENADAS DE UN MARCADOR COLOCADO
 //============================================================================
 function mostrarCoordenadas(latLng) {
     const lat = latLng.lat().toFixed(6);
@@ -628,6 +644,7 @@ function mostrarCoordenadas(latLng) {
 }
 
 //============================================================================
+// UNA VEZ COLOCADO EL MARCADOR, OBTENER LAS COORDENADS DE ESE PUNTO
 //============================================================================
 function obtenerDireccion(geocoder, latLng) {
     const direccionContenedor = document.getElementById("direccion");
@@ -651,6 +668,7 @@ function obtenerDireccion(geocoder, latLng) {
 }
 
 //============================================================================
+//FUNCION QUE PERMITE DARLE ESTILOS A LOS MAPAS DE DISTITNAS SECCIONES
 //============================================================================
 function getEstilosConZoom(zoom) {
     return [
@@ -692,11 +710,8 @@ function getEstilosConZoom(zoom) {
         }
     ];
 }
-<<<<<<< HEAD
 
 // Manejar el evento de retroceso/avance del navegador
 window.addEventListener('popstate', function(event) {
     window.location.reload();
 });
-=======
->>>>>>> 9efcc08db1bb2afaa22a061659d638f8823123ca
