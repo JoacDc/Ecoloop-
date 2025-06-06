@@ -3,6 +3,10 @@ let ultimaUbicacion = null;
 let mapaGoogle;
 let infoWindowContenedores;
 let contenedorAEliminarId = null;
+let marcadorClickProximidad = null; // Marcador para el punto de búsqueda por clic
+
+// Array para mantener una referencia a los marcadores, los datos y las tarjetas
+let marcadoresConDatos = []; 
 
 //============================================================================
 //FUNCION DE LA PANTALLA PRINCIPAL PARA EL INICIALIZACION DEL MAPA CON LA
@@ -17,9 +21,11 @@ function iniciarMap() {
         styles: getEstilosConZoom(13)
     });
 
-    infoWindowContenedores = new google.maps.InfoWindow();    
+    infoWindowContenedores = new google.maps.InfoWindow();
     const containerCardsContainer = document.getElementById('container-cards-container');
-    const markers = [];
+    
+    // Limpiamos el array antes de llenarlo
+    marcadoresConDatos = [];
 
     if (typeof datosContenedores !== 'undefined' && datosContenedores.length > 0) {
         datosContenedores.forEach(contenedor => {
@@ -29,8 +35,6 @@ function iniciarMap() {
                 map: mapaGoogle,
                 title: contenedor.nombre
             });
-
-            markers.push(marker);
 
             const contentString = `
                 <div class="info-window-content">
@@ -63,11 +67,102 @@ function iniciarMap() {
             });
 
             containerCardsContainer.appendChild(card);
+            
+            // guarda el marcador, los datos y la tarjeta para el filtrado
+            marcadoresConDatos.push({ marker: marker, datos: contenedor, card: card });
         });
     } else {
         console.warn("No se encontraron contenedores para mostrar en el mapa inicial o datosContenedores no está definido.");
     }
+    
+    // se añade el listener para filtrar por proximidad al hacer clic en el mapa
+    mapaGoogle.addListener('click', (event) => {
+        filtrarPorProximidad(event.latLng);
+    });
 }
+
+
+//============================================================================
+// FUNCION PARA FILTRAR CONTENEDORES POR PROXIMIDAD
+//============================================================================
+function filtrarPorProximidad(posicionClick) {
+    const RADIO_BUSQUEDA_METROS = 1000; // Define el radio de búsqueda en 1 km
+
+    // Limpia el campo de búsqueda por texto para evitar conflictos
+    document.getElementById('filtroBusqueda').value = '';
+
+    // Coloca un marcador visual en el punto del clic
+    if (marcadorClickProximidad) {
+        marcadorClickProximidad.setMap(null);
+    }
+    marcadorClickProximidad = new google.maps.Marker({
+        position: posicionClick,
+        map: mapaGoogle,
+        title: 'Punto de búsqueda',
+        icon: {
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 7,
+            fillColor: "#4285F4",
+            fillOpacity: 1,
+            strokeWeight: 2,
+            strokeColor: "#ffffff"
+        }
+    });
+
+    marcadoresConDatos.forEach(item => {
+        const posicionContenedor = item.marker.getPosition();
+        // Calcula la distancia entre el punto de clic y cada contenedor
+        const distancia = google.maps.geometry.spherical.computeDistanceBetween(posicionClick, posicionContenedor);
+
+        const estaCerca = distancia <= RADIO_BUSQUEDA_METROS;
+
+        // Muestra u oculta el marcador y la tarjeta según la distancia
+        item.marker.setVisible(estaCerca);
+        item.card.style.display = estaCerca ? '' : 'none';
+    });
+}
+
+
+//============================================================================
+// FUNCION PARA FILTRAR POR TEXTO EN CUALQUIER PÁGINA
+//============================================================================
+function filtrarContenedores() {
+    // Si hay un marcador de proximidad, se desactiva para no confundir
+    if (marcadorClickProximidad) {
+        marcadorClickProximidad.setMap(null);
+        marcadorClickProximidad = null;
+    }
+
+    const textoBusqueda = document.getElementById('filtroBusqueda').value.toLowerCase();
+
+    // Comprobar si esta ubicado en la página principal (que usa marcadoresConDatos)
+    if (typeof marcadoresConDatos !== 'undefined' && marcadoresConDatos.length > 0) {
+        // Lógica para la página principal (filtrar lista y marcadores del mapa)
+        marcadoresConDatos.forEach(item => {
+            const contenedor = item.datos;
+            const textoContenedor = (
+                contenedor.nombre +
+                contenedor.color +
+                contenedor.tamanio.toString() +
+                contenedor.tipoResiduo
+            ).toLowerCase();
+            const coincide = textoContenedor.includes(textoBusqueda);
+            item.marker.setVisible(coincide);
+            if (item.card) { // Asegura que la tarjeta existe antes de intentar ocultarla
+                item.card.style.display = coincide ? '' : 'none';
+            }
+        });
+    } else {
+        // Lógica para otras páginas (editar, eliminar) que solo filtran la lista de tarjetas
+        const cards = document.querySelectorAll('#containerList .container-card');
+        cards.forEach(card => {
+            const textoContenedor = card.textContent.toLowerCase();
+            const coincide = textoContenedor.includes(textoBusqueda);
+            card.style.display = coincide ? '' : 'none';
+        });
+    }
+}
+
 
 //============================================================================
 //FUNCION QUE PERMIETE EL AGREGADO DE CONTENEDORES NUEVOS
@@ -202,9 +297,9 @@ function mapaAgregarContenedor(){
 //============================================================================
 function validarFormulario() {
     return document.getElementById('nombre').value.trim() !== '' && 
-        document.getElementById('color').value.trim() !== '' &&
-        document.getElementById('tamanio').value.trim() !== '' &&
-        document.getElementById('tipoResiduo').value.trim() !== '';
+            document.getElementById('color').value.trim() !== '' &&
+            document.getElementById('tamanio').value.trim() !== '' &&
+            document.getElementById('tipoResiduo').value.trim() !== '';
 }
 
 //============================================================================
@@ -257,7 +352,7 @@ function enviarDatos() {
         if (loadingAlert) loadingAlert.remove();
         
         // Mostrar mensaje de éxito
-        showCustomAlert(`✅ Contenedor "${data.nombre || datos.nombre}" creado con éxito`, 3000);
+        showCustomAlert(` Contenedor "${data.nombre || datos.nombre}" creado con éxito`, 3000);
         
         // Limpiar formulario
         form.reset();
@@ -271,7 +366,7 @@ function enviarDatos() {
         // Limpiar ubicación y campos
         ultimaUbicacion = null;
         document.getElementById('coordenadas').textContent = 'Latitud: — | Longitud: —';
-        document.getElementById('direccion').textContent = '📍 Dirección: —';
+        document.getElementById('direccion').textContent = ' Dirección: —';
         
         // Actualizar la página después de 1 segundo (para que se vea el mensaje)
         setTimeout(() => {
@@ -283,7 +378,7 @@ function enviarDatos() {
         if (loadingAlert) loadingAlert.remove();
         
         const errorMsg = error.message || error.error || 'Error desconocido al crear el contenedor';
-        showCustomAlert(`❌ Error: ${errorMsg}`, 5000);
+        showCustomAlert(` Error: ${errorMsg}`, 5000);
         botonEnviar.disabled = false;
     });
 }
@@ -307,7 +402,7 @@ function mapaEditarContenedor(){
     const formElement = document.getElementById('contenedorForm');
 
     mapaGoogle.addListener('click', function(event) {
-        console.log("¡Click detectado para colocar marcador! Coordenadas:", event.latLng.lat(), event.latLng.lng());
+        console.log("colocar marcador, Coordenadas:", event.latLng.lat(), event.latLng.lng());
         colocarUnicoMarcador(event.latLng, mapaGoogle);
         mostrarCoordenadas(event.latLng);
         obtenerDireccion(geocoder, event.latLng);
@@ -381,14 +476,14 @@ async function enviarDatosEditar() {
         const data = await response.json();
         
         // Mostrar mensaje de éxito y recargar después de 1 segundo
-        showCustomAlert(`✅ Cambios guardados: ${data.message}`, 1000);
+        showCustomAlert(`Cambios guardados: ${data.message}`, 1000);
         setTimeout(() => {
             window.location.reload();
         }, 1000);
         
     } catch (error) {
         console.error('Error al enviar datos:', error);
-        showCustomAlert(`❌ Error al guardar: ${error.message}`, 3000);
+        showCustomAlert(`Error al guardar: ${error.message}`, 3000);
     } finally {
         botonEnviar.disabled = false;
     }
@@ -402,8 +497,10 @@ async function cargarContenedores(mode = 'normal') {
     const containerListDiv = document.getElementById('containerList');
     const loadingMessage = document.getElementById('loadingMessage');
     
-    containerListDiv.innerHTML = '';
-    containerListDiv.appendChild(loadingMessage);
+    // Limpiamos el contenido anterior excepto la barra de búsqueda y el título
+    containerListDiv.querySelectorAll('.container-card, p:not(#loadingMessage)').forEach(el => el.remove());
+    loadingMessage.style.display = 'block';
+
 
     try {
         const response = await fetch('/api/contenedores');
@@ -413,10 +510,12 @@ async function cargarContenedores(mode = 'normal') {
         }
         const contenedores = await response.json();
         
-        loadingMessage.remove();
+        loadingMessage.style.display = 'none';
 
         if (contenedores.length === 0) {
-            containerListDiv.innerHTML = '<p>No hay contenedores cargados aún.</p>';
+            const noContenedoresMsg = document.createElement('p');
+            noContenedoresMsg.textContent = 'No hay contenedores cargados aún.';
+            containerListDiv.appendChild(noContenedoresMsg);
         } else {
             contenedores.forEach(contenedor => {
                 const card = document.createElement('div');
@@ -450,7 +549,11 @@ async function cargarContenedores(mode = 'normal') {
             });
         }
     } catch (error) {
-        containerListDiv.innerHTML = `<p style="color: red;">Error al cargar contenedores: ${error.message}</p>`;
+        loadingMessage.style.display = 'none';
+        const errorMsg = document.createElement('p');
+        errorMsg.style.color = 'red';
+        errorMsg.textContent = `Error al cargar contenedores: ${error.message}`;
+        containerListDiv.appendChild(errorMsg);
         console.error('Error de red al cargar contenedores:', error);
     }
 }
@@ -515,7 +618,7 @@ async function eliminarContenedor(id) {
             throw new Error(errorData.message || 'Error desconocido al eliminar el contenedor.');
         }
         const data = await response.json();
-        showCustomAlert(`🗑️ Contenedor eliminado: ${data.message}`);
+        showCustomAlert(`Contenedor eliminado: ${data.message}`);
         
         // Recargar la página completa para asegurar que todo se actualice correctamente
         window.location.reload();
@@ -714,7 +817,4 @@ function getEstilosConZoom(zoom) {
 // Manejar el evento de retroceso/avance del navegador
 window.addEventListener('popstate', function(event) {
     window.location.reload();
-
 });
-
-

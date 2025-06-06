@@ -7,11 +7,13 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style_editar_contenedor.css') }}">
 </head>
 <body>
-    <!-- Nuevo div para la lista de contenedores -->
+    <!-- Div para la lista de contenedores -->
     <div class="container-list" id="containerList">
         <h3>Contenedores Cargados</h3>
+        <!-- Barra de búsqueda -->
+        <input type="text" id="filtroBusqueda" onkeyup="filtrarContenedores()" placeholder="Buscar contenedor..." class="search-bar">
         <p id="loadingMessage">Cargando contenedores...</p>
-        <!-- Las tarjetas de contenedores se insertarán aquí mediante JavaScript -->
+        <!-- Las tarjetas de contenedores se insertan mediante JavaScript -->
     </div>
 
     <div class="form-container">
@@ -56,7 +58,6 @@
     </div>
 
     <script src="{{ url_for('static', filename='JS/script.js') }}"></script>
-    <!-- Asegúrate de reemplazar AIzaSyD42PTKxmjYoXylhpUf2rzpMkMEfnAogI0 con tu clave de API de Google Maps real -->
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD42PTKxmjYoXylhpUf2rzpMkMEfnAogI0&callback=mapaEditarContenedor"></script>
 </body>
 </html>

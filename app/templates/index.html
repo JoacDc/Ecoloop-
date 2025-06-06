@@ -13,8 +13,11 @@
 
             <div class="containers-list-panel">
                 <h2>Contenedores en el Mapa</h2>
+                <!-- Barra de búsqueda agregada -->
+                <input type="text" id="filtroBusqueda" onkeyup="filtrarContenedores()" placeholder="Buscar por texto..." class="search-bar">
                 <div id="container-cards-container">
-                    </div>
+                    <!-- Las tarjetas de los contenedores se cargarán aquí -->
+                </div>
             </div>
         </div>
 
@@ -25,10 +28,12 @@
     </div>
 
     <script>
+        // Los datos de los contenedores se pasan desde Flask a JavaScript
         const datosContenedores = JSON.parse('{{ contenedores | tojson | safe }}');
     </script>
     <script src="{{ url_for('static', filename='JS/script.js') }}"></script>
-
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD42PTKxmjYoXylhpUf2rzpMkMEfnAogI0&callback=iniciarMap"></script>
+    <!-- Se agrega &libraries=geometry para poder calcular distancias -->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD42PTKxmjYoXylhpUf2rzpMkMEfnAogI0&libraries=geometry&callback=iniciarMap"></script>
+    <!-- NOTA: Reemplaza TU_API_KEY con tu clave de API de Google Maps -->
 </body>
 </html>

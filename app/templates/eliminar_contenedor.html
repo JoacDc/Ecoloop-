@@ -22,6 +22,8 @@
         <div class="container-list-section">
             <h3>Selecciona un Contenedor para Eliminar</h3>
             <div id="containerList">
+                <input type="text" id="filtroBusqueda" onkeyup="filtrarContenedores()" placeholder="Buscar contenedor..." class="search-bar">
+
                 <p id="loadingMessage">Cargando contenedores...</p>
             </div>
         </div>
@@ -34,11 +36,9 @@
             </div>
         </div>
 
-        <!-- Contenedor para alertas personalizadas (posición fija para notificaciones) -->
         <div id="customAlertContainer" style="position: fixed; bottom: 20px; right: 20px; z-index: 1020;"></div>
     </div>
 
-    <!-- El script.js ya está en un archivo separado -->
     <script src="{{ url_for('static', filename='JS/script.js') }}"></script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD42PTKxmjYoXylhpUf2rzpMkMEfnAogI0&callback=mapaEliminarContenedor"></script>
 </body>
